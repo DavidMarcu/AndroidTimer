@@ -4,6 +4,11 @@ public class Stopwatch {
     private int seconds;
     private boolean running;
 
+    public Stopwatch(){
+        seconds = 0;
+        running = false;
+    }
+
     public Stopwatch(int seconds, boolean running) {
         this.seconds = seconds;
         this.running = running;
