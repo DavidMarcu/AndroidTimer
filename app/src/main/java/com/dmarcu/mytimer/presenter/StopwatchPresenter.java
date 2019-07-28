@@ -26,13 +26,13 @@ public class StopwatchPresenter {
         if(running){
             stopwatchView.startStopwatch();
         } else{
-            stopwatchView.stopStopwatch();
+            stopwatchView.pauseStopwatch();
         }
     }
 
     public interface StopwatchView{
         void updateStopwatchTimer(int seconds);
         void startStopwatch();
-        void stopStopwatch();
+        void pauseStopwatch();
     }
 }
