@@ -1,2 +1,1 @@
 # AndroidTimer
-A customizable timer
