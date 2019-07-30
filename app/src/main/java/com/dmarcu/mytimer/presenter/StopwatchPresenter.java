@@ -1,38 +1,63 @@
 package com.dmarcu.mytimer.presenter;
 
+import android.os.Handler;
 import com.dmarcu.mytimer.model.Stopwatch;
 
 public class StopwatchPresenter {
 
     private Stopwatch stopwatchModel;
     private StopwatchView stopwatchView;
+    private Runnable timerRunnable;
+    private Handler timerHandler;
 
     public StopwatchPresenter(StopwatchView stopwatchView){
         stopwatchModel = new Stopwatch();
         this.stopwatchView = stopwatchView;
+        timerHandler = new Handler();
+        timerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateTime(getStopwatchTime() + 1);
+                timerHandler.postDelayed(this, 1000);
+            }
+        };
     }
 
-    public int getStopwatchTime(){
+    public void onStartPressed(){
+        stopwatchModel.setRunning(true);
+        startStopwatch();
+    }
+
+    public void onPausePressed(){
+        stopwatchModel.setRunning(false);
+        pauseStopwatch();
+    }
+
+    public void onResetPressed(){
+        stopwatchModel.setRunning(false);
+        pauseStopwatch();
+        updateTime(0);
+    }
+
+    private int getStopwatchTime(){
         return stopwatchModel.getSeconds();
     }
 
-    public void updateSeconds(int seconds){
+    private void updateTime(int seconds){
         stopwatchModel.setSeconds(seconds);
         stopwatchView.updateStopwatchTimer(seconds);
     }
 
-    public void updateRunning(boolean running){
-        stopwatchModel.setRunning(running);
-        if(running){
-            stopwatchView.startStopwatch();
-        } else{
-            stopwatchView.pauseStopwatch();
-        }
+    private void startStopwatch() {
+        timerHandler.postDelayed(timerRunnable, 1000);
     }
+
+    private void pauseStopwatch() {
+        timerHandler.removeCallbacks(timerRunnable);
+    }
+
 
     public interface StopwatchView{
         void updateStopwatchTimer(int seconds);
-        void startStopwatch();
-        void pauseStopwatch();
     }
 }
