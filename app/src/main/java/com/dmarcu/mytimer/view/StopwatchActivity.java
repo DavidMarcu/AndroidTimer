@@ -19,7 +19,7 @@ public class StopwatchActivity extends AppCompatActivity implements StopwatchPre
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        stopwatchPresenter = new StopwatchPresenter(this);
+        stopwatchPresenter = new StopwatchPresenter(this, savedInstanceState);
         stopwatchTextView = findViewById(R.id.stopwatch_text_view);
 
         Button startButton = findViewById(R.id.start_button);
@@ -30,6 +30,11 @@ public class StopwatchActivity extends AppCompatActivity implements StopwatchPre
         resetButton.setOnClickListener(button -> stopwatchPresenter.onResetPressed());
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        stopwatchPresenter.saveState(outState);
+    }
 
     @Override
     public void updateStopwatchTimer(int seconds) {
