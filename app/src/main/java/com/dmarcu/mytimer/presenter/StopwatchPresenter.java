@@ -14,6 +14,11 @@ public class StopwatchPresenter {
     public StopwatchPresenter(StopwatchView stopwatchView, Bundle savedState){
         stopwatchModel = new Stopwatch();
         this.stopwatchView = stopwatchView;
+        if(savedState != null){
+            stopwatchModel.setSeconds(savedState.getInt("seconds"));
+            stopwatchModel.setRunning(savedState.getBoolean("running"));
+            stopwatchView.updateStopwatchTimer(stopwatchModel.getSeconds());
+        }
         timerHandler = new Handler();
         timerRunnable = new Runnable() {
             @Override
