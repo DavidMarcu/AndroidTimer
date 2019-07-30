@@ -28,6 +28,7 @@ public class StopwatchActivity extends AppCompatActivity implements StopwatchPre
         pauseButton.setOnClickListener(button -> stopwatchPresenter.onPausePressed());
         Button resetButton = findViewById(R.id.reset_button);
         resetButton.setOnClickListener(button -> stopwatchPresenter.onResetPressed());
+        resetButton.setOnClickListener(button -> stopwatchPresenter.onResetPressed());
     }
 
     @Override
