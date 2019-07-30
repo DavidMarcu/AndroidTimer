@@ -1,5 +1,6 @@
 package com.dmarcu.mytimer.presenter;
 
+import android.os.Bundle;
 import android.os.Handler;
 import com.dmarcu.mytimer.model.Stopwatch;
 
@@ -10,7 +11,7 @@ public class StopwatchPresenter {
     private Runnable timerRunnable;
     private Handler timerHandler;
 
-    public StopwatchPresenter(StopwatchView stopwatchView){
+    public StopwatchPresenter(StopwatchView stopwatchView, Bundle savedState){
         stopwatchModel = new Stopwatch();
         this.stopwatchView = stopwatchView;
         timerHandler = new Handler();
@@ -21,6 +22,15 @@ public class StopwatchPresenter {
                 timerHandler.postDelayed(this, 1000);
             }
         };
+    
+        if(savedState != null){
+            stopwatchModel.setSeconds(savedState.getInt("seconds"));
+            stopwatchModel.setRunning(savedState.getBoolean("running"));
+            if(stopwatchModel.isRunning()){
+                startStopwatch();
+            }
+            this.stopwatchView.updateStopwatchTimer(stopwatchModel.getSeconds());
+        }
     }
 
     public void onStartPressed(){
@@ -37,6 +47,11 @@ public class StopwatchPresenter {
         stopwatchModel.setRunning(false);
         pauseStopwatch();
         updateTime(0);
+    }
+
+    public void saveState(Bundle currentState){
+        currentState.putInt("seconds", stopwatchModel.getSeconds());
+        currentState.putBoolean("running", stopwatchModel.isRunning());
     }
 
     private int getStopwatchTime(){
