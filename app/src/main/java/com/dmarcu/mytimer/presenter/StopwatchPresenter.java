@@ -27,6 +27,15 @@ public class StopwatchPresenter {
                 timerHandler.postDelayed(this, 1000);
             }
         };
+    
+        if(savedState != null){
+            stopwatchModel.setSeconds(savedState.getInt("seconds"));
+            stopwatchModel.setRunning(savedState.getBoolean("running"));
+            if(stopwatchModel.isRunning()){
+                startStopwatch();
+            }
+            this.stopwatchView.updateStopwatchTimer(stopwatchModel.getSeconds());
+        }
     }
 
     public void onStartPressed(){

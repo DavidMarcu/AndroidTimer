@@ -21,13 +21,13 @@ public class StopwatchActivity extends AppCompatActivity implements StopwatchPre
         setContentView(R.layout.activity_main);
         stopwatchPresenter = new StopwatchPresenter(this, savedInstanceState);
         stopwatchTextView = findViewById(R.id.stopwatch_text_view);
+        stopwatchPresenter = new StopwatchPresenter(this, savedInstanceState);
 
         Button startButton = findViewById(R.id.start_button);
         startButton.setOnClickListener(button -> stopwatchPresenter.onStartPressed());
         Button pauseButton = findViewById(R.id.pause_button);
         pauseButton.setOnClickListener(button -> stopwatchPresenter.onPausePressed());
         Button resetButton = findViewById(R.id.reset_button);
-        resetButton.setOnClickListener(button -> stopwatchPresenter.onResetPressed());
         resetButton.setOnClickListener(button -> stopwatchPresenter.onResetPressed());
     }
 
