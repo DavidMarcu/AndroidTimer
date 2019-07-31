@@ -2,6 +2,7 @@ package com.dmarcu.mytimer.view;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,13 +41,17 @@ public class StopwatchActivity extends AppCompatActivity implements StopwatchPre
     }
 
     @Override
-    public void updateStopwatchTimer(int seconds) {
-        int HOUR_IN_SECONDS = 3600;
-        int hours = seconds / HOUR_IN_SECONDS;
+    public void updateStopwatchTimer(long miliseconds) {
+        long HOUR_IN_MILISECONDS = 3600000;
+        long hours = miliseconds / HOUR_IN_MILISECONDS;
 
-        int MINUTE_IN_SECONDS = 60;
-        int minutes = (seconds % 3600) / MINUTE_IN_SECONDS;
-        String formattedTime = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds % 60);
+        int MINUTE_IN_MILISECONDS = 60000;
+        long minutes = (miliseconds % HOUR_IN_MILISECONDS) / MINUTE_IN_MILISECONDS;
+
+        int SECONDS_IN_MILISECONDS = 1000;
+        long seconds = (miliseconds % MINUTE_IN_MILISECONDS) / SECONDS_IN_MILISECONDS;
+        Log.d("TIME", hours + " " + minutes + " " + seconds + " " + miliseconds);
+        String formattedTime = String.format(Locale.getDefault(), "%02d:%02d:%02d.%03d", hours, minutes, seconds, miliseconds % 1000);
         stopwatchTextView.setText(formattedTime);
     }
 }

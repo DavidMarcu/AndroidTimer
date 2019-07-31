@@ -19,7 +19,7 @@ public class StopwatchPresenter {
             @Override
             public void run() {
                 updateTime(getStopwatchTime() + 1);
-                timerHandler.postDelayed(this, 1000);
+                timerHandler.postDelayed(this, 1);
             }
         };
     }
@@ -41,30 +41,30 @@ public class StopwatchPresenter {
     }
 
     public void saveState(Bundle currentState){
-        currentState.putInt("seconds", stopwatchModel.getSeconds());
+        currentState.putLong("miliseconds", stopwatchModel.getMiliseconds());
         currentState.putBoolean("running", stopwatchModel.isRunning());
     }
 
     public void restoreState(Bundle savedState) {
-        stopwatchModel.setSeconds(savedState.getInt("seconds"));
+        stopwatchModel.setMiliseconds(savedState.getLong("miliseconds"));
         stopwatchModel.setRunning(savedState.getBoolean("running"));
         if(stopwatchModel.isRunning()){
             startStopwatch();
         }
-        this.stopwatchView.updateStopwatchTimer(stopwatchModel.getSeconds());
+        this.stopwatchView.updateStopwatchTimer(stopwatchModel.getMiliseconds());
     }
 
-    private int getStopwatchTime(){
-        return stopwatchModel.getSeconds();
+    private long getStopwatchTime(){
+        return stopwatchModel.getMiliseconds();
     }
 
-    private void updateTime(int seconds){
-        stopwatchModel.setSeconds(seconds);
-        stopwatchView.updateStopwatchTimer(seconds);
+    private void updateTime(long miliseconds){
+        stopwatchModel.setMiliseconds(miliseconds);
+        stopwatchView.updateStopwatchTimer(miliseconds);
     }
 
     private void startStopwatch() {
-        timerHandler.postDelayed(timerRunnable, 1000);
+        timerHandler.postDelayed(timerRunnable, 1);
     }
 
     private void pauseStopwatch() {
@@ -72,6 +72,6 @@ public class StopwatchPresenter {
     }
 
     public interface StopwatchView{
-        void updateStopwatchTimer(int seconds);
+        void updateStopwatchTimer(long miliseconds);
     }
 }
