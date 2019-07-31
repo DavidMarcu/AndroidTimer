@@ -11,14 +11,9 @@ public class StopwatchPresenter {
     private Runnable timerRunnable;
     private Handler timerHandler;
 
-    public StopwatchPresenter(StopwatchView stopwatchView, Bundle savedState){
+    public StopwatchPresenter(StopwatchView stopwatchView){
         stopwatchModel = new Stopwatch();
         this.stopwatchView = stopwatchView;
-        if(savedState != null){
-            stopwatchModel.setSeconds(savedState.getInt("seconds"));
-            stopwatchModel.setRunning(savedState.getBoolean("running"));
-            stopwatchView.updateStopwatchTimer(stopwatchModel.getSeconds());
-        }
         timerHandler = new Handler();
         timerRunnable = new Runnable() {
             @Override
@@ -27,15 +22,6 @@ public class StopwatchPresenter {
                 timerHandler.postDelayed(this, 1000);
             }
         };
-    
-        if(savedState != null){
-            stopwatchModel.setSeconds(savedState.getInt("seconds"));
-            stopwatchModel.setRunning(savedState.getBoolean("running"));
-            if(stopwatchModel.isRunning()){
-                startStopwatch();
-            }
-            this.stopwatchView.updateStopwatchTimer(stopwatchModel.getSeconds());
-        }
     }
 
     public void onStartPressed(){
@@ -59,6 +45,15 @@ public class StopwatchPresenter {
         currentState.putBoolean("running", stopwatchModel.isRunning());
     }
 
+    public void restoreState(Bundle savedState) {
+        stopwatchModel.setSeconds(savedState.getInt("seconds"));
+        stopwatchModel.setRunning(savedState.getBoolean("running"));
+        if(stopwatchModel.isRunning()){
+            startStopwatch();
+        }
+        this.stopwatchView.updateStopwatchTimer(stopwatchModel.getSeconds());
+    }
+
     private int getStopwatchTime(){
         return stopwatchModel.getSeconds();
     }
@@ -75,7 +70,6 @@ public class StopwatchPresenter {
     private void pauseStopwatch() {
         timerHandler.removeCallbacks(timerRunnable);
     }
-
 
     public interface StopwatchView{
         void updateStopwatchTimer(int seconds);
