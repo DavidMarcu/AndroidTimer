@@ -1,25 +1,28 @@
 package com.dmarcu.mytimer.model;
 
 public class Stopwatch {
-    private long miliseconds;
+    private long timeElapsed;
     private boolean running;
 
     public Stopwatch(){
-        miliseconds = 0L;
-        running = false;
+        this(0L, false);
     }
 
-    public Stopwatch(long miliseconds, boolean running) {
-        this.miliseconds = miliseconds;
+    public Stopwatch(long timeElapsed){
+        this(timeElapsed, false);
+    }
+
+    public Stopwatch(long timeElapsed, boolean running) {
+        this.timeElapsed = timeElapsed;
         this.running = running;
     }
 
-    public long getMiliseconds() {
-        return miliseconds;
+    public long getTimeElapsed() {
+        return timeElapsed;
     }
 
-    public void setMiliseconds(long miliseconds) {
-        this.miliseconds = miliseconds;
+    public void setTimeElapsed(long timeElapsed) {
+        this.timeElapsed = timeElapsed;
     }
 
     public boolean isRunning() {

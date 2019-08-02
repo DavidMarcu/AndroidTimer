@@ -2,6 +2,7 @@ package com.dmarcu.mytimer.presenter;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import com.dmarcu.mytimer.model.Stopwatch;
 
 public class StopwatchPresenter {
@@ -10,61 +11,76 @@ public class StopwatchPresenter {
     private StopwatchView stopwatchView;
     private Runnable timerRunnable;
     private Handler timerHandler;
+    private long pauseTimestamp;
+    private boolean wasPaused;
 
     public StopwatchPresenter(StopwatchView stopwatchView){
         stopwatchModel = new Stopwatch();
+        pauseTimestamp = stopwatchModel.getTimeElapsed();
         this.stopwatchView = stopwatchView;
         timerHandler = new Handler();
         timerRunnable = new Runnable() {
             @Override
             public void run() {
-                updateTime(getStopwatchTime() + 1);
-                timerHandler.postDelayed(this, 1);
+                updateTime(SystemClock.elapsedRealtime());
+                timerHandler.postDelayed(this, 10);
             }
         };
+        wasPaused = false;
     }
 
     public void onStartPressed(){
+        if(wasPaused){
+            long pauseTime = SystemClock.elapsedRealtime() - pauseTimestamp;
+            stopwatchModel.setTimeElapsed(stopwatchModel.getTimeElapsed() + pauseTime);
+            wasPaused = false;
+        }
+        else {
+            stopwatchModel.setTimeElapsed(SystemClock.elapsedRealtime());
+        }
         stopwatchModel.setRunning(true);
         startStopwatch();
     }
 
     public void onPausePressed(){
+        pauseTimestamp = SystemClock.elapsedRealtime();
         stopwatchModel.setRunning(false);
         pauseStopwatch();
+        wasPaused = true;
     }
 
     public void onResetPressed(){
         stopwatchModel.setRunning(false);
         pauseStopwatch();
-        updateTime(0);
+        resetTime();
+        wasPaused = false;
     }
 
     public void saveState(Bundle currentState){
-        currentState.putLong("miliseconds", stopwatchModel.getMiliseconds());
+        currentState.putLong("timeElapsed", stopwatchModel.getTimeElapsed());
         currentState.putBoolean("running", stopwatchModel.isRunning());
     }
 
     public void restoreState(Bundle savedState) {
-        stopwatchModel.setMiliseconds(savedState.getLong("miliseconds"));
+        stopwatchModel.setTimeElapsed(savedState.getLong("timeElapsed"));
         stopwatchModel.setRunning(savedState.getBoolean("running"));
         if(stopwatchModel.isRunning()){
             startStopwatch();
         }
-        this.stopwatchView.updateStopwatchTimer(stopwatchModel.getMiliseconds());
+        this.stopwatchView.updateStopwatchTimer(stopwatchModel.getTimeElapsed());
     }
 
-    private long getStopwatchTime(){
-        return stopwatchModel.getMiliseconds();
+    private void updateTime(long timeElapsed){
+        long realTimeElapsed = timeElapsed - stopwatchModel.getTimeElapsed();
+        stopwatchView.updateStopwatchTimer(realTimeElapsed);
     }
 
-    private void updateTime(long miliseconds){
-        stopwatchModel.setMiliseconds(miliseconds);
-        stopwatchView.updateStopwatchTimer(miliseconds);
+    private void resetTime() {
+        stopwatchView.updateStopwatchTimer(0);
     }
 
     private void startStopwatch() {
-        timerHandler.postDelayed(timerRunnable, 1);
+        timerHandler.postDelayed(timerRunnable, 10);
     }
 
     private void pauseStopwatch() {
@@ -72,6 +88,6 @@ public class StopwatchPresenter {
     }
 
     public interface StopwatchView{
-        void updateStopwatchTimer(long miliseconds);
+        void updateStopwatchTimer(long timeElapsed);
     }
 }
